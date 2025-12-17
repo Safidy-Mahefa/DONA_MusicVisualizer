@@ -18,12 +18,12 @@ Transformez votre musique en spectacle visuel. Gratuit, open-source, privacy-fir
 
 ## 🚀 Demo
 
-[Lien vers démo en ligne] (quand prêt)
+Indisponible
 
 ## 📦 Installation
 
 \`\`\`bash
-git clone https://github.com/Safidy-Mahefa/dona.git
+git clone https://github.com/Safidy-Mahefa/DONA_MusicVisualizer.git
 cd dona
 npm install
 npm start
