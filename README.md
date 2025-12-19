@@ -25,8 +25,7 @@ Indisponible
 \`\`\`bash
 git clone https://github.com/Safidy-Mahefa/DONA_MusicVisualizer.git
 cd dona
-npm install
-npm start
+lancez le fichier index.html dans un navigateur 
 \`\`\`
 
 ## 🛠️ Stack Technique
