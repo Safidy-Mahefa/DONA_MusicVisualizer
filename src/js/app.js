@@ -8,6 +8,7 @@ import { rgbToString } from './colorExtractor.js';
 import { setAudioFiles } from './playback.js';
 import { setupControls } from './controls.js';
 import { initAide } from './aide.js';
+import { validateFiles, validateBackgroundFile, showNotification } from './fileUploadVerification.js';
 
 // import {startRecording, exportVideo,showRecordButton} from './recorder.js' //pour l'enregistrement vid du canvas
 
@@ -70,28 +71,74 @@ import { initAide } from './aide.js';
     resize(); //lancer la fonction une première fois au début
 
     // Quand on upload une nouvelle musique,
-    fileInput.addEventListener("change", (e)=>{
-        if (e.target.files.length > 0) {
-            selectedFiles =  Array.from(e.target.files); //convertir en tableau les audios de l'input
+    // Changement : Ajout de vérification
+    fileInput.addEventListener("change", async (e) => {
+        if (e.target.files.length === 0) return;
+        
+        console.log('📁 Fichiers sélectionnés:', e.target.files.length);
+        
+        // ✅ VALIDATION DES FICHIERS AUDIO
+        const result = await validateFiles(Array.from(e.target.files), 'audio');
+        
+        console.log('✅ Fichiers valides:', result.validFiles.length);
+        console.log('❌ Fichiers invalides:', result.invalidFiles.length);
+        
+        // Si TOUS les fichiers sont invalides
+        if (result.validFiles.length === 0) {
+            showNotification('❌ Aucun fichier audio valide détecté', 'error');
+            result.invalidFiles.forEach(invalid => {
+                console.error(`❌ ${invalid.file.name}: ${invalid.reason}`);
+                showNotification(`❌ ${invalid.file.name}: ${invalid.reason}`, 'error');
+            });
+            e.target.value = ''; // Reset l'input
+            return; // ARRÊTER ICI
+        }
+        
+        // Si certains fichiers sont invalides
+        if (result.hasInvalid) {
+            result.invalidFiles.forEach(invalid => {
+                console.warn(`⚠️ ${invalid.file.name}: ${invalid.reason}`);
+                showNotification(`❌ ${invalid.file.name}: ${invalid.reason}`, 'error');
+            });
+        }
+        
+        // ✅ CONTINUER SEULEMENT AVEC LES FICHIERS VALIDES
+        if (result.validFiles.length > 0) {
+            selectedFiles = result.validFiles; // Utiliser SEULEMENT les fichiers valides
             setAudioFiles(selectedFiles);
             renderAudioList();
-            trackName.textContent = e.target.files[0].name;
+            trackName.textContent = result.validFiles[0].name; // Premier fichier VALIDE
             document.querySelector('.canvas-placeholder').style.display = 'none';
         }
-        playMusic(audioEl,0,document.querySelector(".file-list").firstElementChild),
-        showRecordButton(recordBtn);
+        
+        playMusic(audioEl, 0, document.querySelector(".file-list").firstElementChild);
+        showNotification(`✅ ${result.validFiles.length} fichier(s) audio valide(s)`, 'success');
     });
 
     // Quand on change le background
-    bgFileInput.addEventListener("change", async (e)=>{
-        const f = e.target.files && e.target.files[0]; //prender le fichier
-        if(!f) return;
-        const bgUrl = URL.createObjectURL(f);
+    bgFileInput.addEventListener("change", async (e) => {
+        const f = e.target.files && e.target.files[0];
+        if (!f) return;
+        
+        console.log('🖼️ Image sélectionnée:', f.name);
+        
+        // ✅ VALIDATION DE L'IMAGE
+        const validFile = await validateBackgroundFile(f);
+        
+        if (!validFile) {
+            console.error('❌ Image invalide');
+            e.target.value = ''; // Reset l'input
+            return; // ARRÊTER ICI
+        }
+        
+        console.log('✅ Image valide');
+        
+        // ✅ CONTINUER SEULEMENT SI VALIDE
+        const bgUrl = URL.createObjectURL(validFile);
         await updateBackground(bgUrl);
         setupDefaultColor();
-        if(defaultColorInput.checked == false) defaultColorInput.checked = true;
+        if (defaultColorInput.checked == false) defaultColorInput.checked = true;
     });
-
     // Quand on change de mode :
     modeSelect.addEventListener("change", ()=>{
         switch(modeSelect.value){ //pour initialiser les smoothing pour chaque mode
