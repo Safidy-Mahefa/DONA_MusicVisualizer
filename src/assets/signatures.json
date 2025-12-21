@@ -1,0 +1,271 @@
+{
+    "images": {
+        "png": {
+            "mime": "image/png",
+            "signatures": ["89504e470d0a1a0a"],
+            "offset": 0,
+            "extension": ".png"
+        },
+        "jpg": {
+            "mime": "image/jpeg",
+            "signatures": ["ffd8ffe0", "ffd8ffe1", "ffd8ffe2", "ffd8ffe3", "ffd8ffe8"],
+            "offset": 0,
+            "extension": ".jpg"
+        },
+        "jpeg": {
+            "mime": "image/jpeg",
+            "signatures": ["ffd8ffe0", "ffd8ffe1", "ffd8ffe2", "ffd8ffe3", "ffd8ffe8"],
+            "offset": 0,
+            "extension": ".jpeg"
+        },
+        "gif87a": {
+            "mime": "image/gif",
+            "signatures": ["474946383761"],
+            "offset": 0,
+            "extension": ".gif"
+        },
+        "gif89a": {
+            "mime": "image/gif",
+            "signatures": ["474946383961"],
+            "offset": 0,
+            "extension": ".gif"
+        },
+        "webp": {
+            "mime": "image/webp",
+            "signatures": ["52494646", "57454250"],
+            "offset": 0,
+            "extension": ".webp",
+            "note": "RIFF container, WEBP at offset 8"
+        },
+        "bmp": {
+            "mime": "image/bmp",
+            "signatures": ["424d"],
+            "offset": 0,
+            "extension": ".bmp"
+        },
+        "tiff_le": {
+            "mime": "image/tiff",
+            "signatures": ["49492a00"],
+            "offset": 0,
+            "extension": ".tif",
+            "note": "Little endian"
+        },
+        "tiff_be": {
+            "mime": "image/tiff",
+            "signatures": ["4d4d002a"],
+            "offset": 0,
+            "extension": ".tiff",
+            "note": "Big endian"
+        },
+        "ico": {
+            "mime": "image/x-icon",
+            "signatures": ["00000100"],
+            "offset": 0,
+            "extension": ".ico"
+        },
+        "svg": {
+            "mime": "image/svg+xml",
+            "signatures": ["3c3f786d6c", "3c737667"],
+            "offset": 0,
+            "extension": ".svg",
+            "note": "XML or <svg"
+        },
+        "psd": {
+            "mime": "image/vnd.adobe.photoshop",
+            "signatures": ["38425053"],
+            "offset": 0,
+            "extension": ".psd"
+        },
+        "heic": {
+            "mime": "image/heic",
+            "signatures": ["66747970686569"],
+            "offset": 4,
+            "extension": ".heic"
+        },
+        "heif": {
+            "mime": "image/heif",
+            "signatures": ["66747970686569"],
+            "offset": 4,
+            "extension": ".heif"
+        },
+        "avif": {
+            "mime": "image/avif",
+            "signatures": ["667479706176"],
+            "offset": 4,
+            "extension": ".avif"
+        }
+    },
+    "videos": {
+        "mp4": {
+            "mime": "video/mp4",
+            "signatures": ["66747970", "6d703432", "69736f6d", "4d534e56"],
+            "offset": 4,
+            "extension": ".mp4",
+            "note": "ftyp container"
+        },
+        "m4v": {
+            "mime": "video/x-m4v",
+            "signatures": ["667479704d3456"],
+            "offset": 4,
+            "extension": ".m4v"
+        },
+        "avi": {
+            "mime": "video/x-msvideo",
+            "signatures": ["52494646", "41564920"],
+            "offset": 0,
+            "extension": ".avi",
+            "note": "RIFF container, AVI at offset 8"
+        },
+        "mov": {
+            "mime": "video/quicktime",
+            "signatures": ["66747970717420", "6d6f6f76", "66726565", "6d646174", "77696465", "706e6f74", "736b6970"],
+            "offset": 4,
+            "extension": ".mov"
+        },
+        "mkv": {
+            "mime": "video/x-matroska",
+            "signatures": ["1a45dfa3"],
+            "offset": 0,
+            "extension": ".mkv"
+        },
+        "webm": {
+            "mime": "video/webm",
+            "signatures": ["1a45dfa3"],
+            "offset": 0,
+            "extension": ".webm"
+        },
+        "flv": {
+            "mime": "video/x-flv",
+            "signatures": ["464c5601"],
+            "offset": 0,
+            "extension": ".flv"
+        },
+        "wmv": {
+            "mime": "video/x-ms-wmv",
+            "signatures": ["3026b2758e66cf11a6d900aa0062ce6c"],
+            "offset": 0,
+            "extension": ".wmv"
+        },
+        "mpeg": {
+            "mime": "video/mpeg",
+            "signatures": ["000001ba", "000001b3"],
+            "offset": 0,
+            "extension": ".mpeg"
+        },
+        "mpg": {
+            "mime": "video/mpeg",
+            "signatures": ["000001ba", "000001b3"],
+            "offset": 0,
+            "extension": ".mpg"
+        },
+        "3gp": {
+            "mime": "video/3gpp",
+            "signatures": ["66747970336770"],
+            "offset": 4,
+            "extension": ".3gp"
+        },
+        "3g2": {
+            "mime": "video/3gpp2",
+            "signatures": ["66747970336732"],
+            "offset": 4,
+            "extension": ".3g2"
+        },
+        "ogv": {
+            "mime": "video/ogg",
+            "signatures": ["4f676753"],
+            "offset": 0,
+            "extension": ".ogv"
+        }
+    },
+    "audio": {
+        "mp3": {
+            "mime": "audio/mpeg",
+            "signatures": ["494433", "fffb", "fff3", "fff2"],
+            "offset": 0,
+            "extension": ".mp3",
+            "note": "ID3 tag or MPEG sync"
+        },
+        "wav": {
+            "mime": "audio/wav",
+            "signatures": ["52494646", "57415645"],
+            "offset": 0,
+            "extension": ".wav",
+            "note": "RIFF container, WAVE at offset 8"
+        },
+        "ogg": {
+            "mime": "audio/ogg",
+            "signatures": ["4f676753"],
+            "offset": 0,
+            "extension": ".ogg"
+        },
+        "flac": {
+            "mime": "audio/flac",
+            "signatures": ["664c6143"],
+            "offset": 0,
+            "extension": ".flac"
+        },
+        "m4a_iso": {
+            "mime": "audio/mp4",
+            "signatures": ["6674797069736f32"],
+            "offset": 4,
+            "extension": ".m4a",
+            "note": "ISO Media MP4 v2 (iso2)"
+        },
+        "m4a": {
+            "mime": "audio/mp4",
+            "signatures": ["667479704d3441"],
+            "offset": 4,
+            "extension": ".m4a"
+        },
+        "aac": {
+            "mime": "audio/aac",
+            "signatures": ["fff1", "fff9"],
+            "offset": 0,
+            "extension": ".aac"
+        },
+        "wma": {
+            "mime": "audio/x-ms-wma",
+            "signatures": ["3026b2758e66cf11a6d900aa0062ce6c"],
+            "offset": 0,
+            "extension": ".wma"
+        },
+        "aiff": {
+            "mime": "audio/aiff",
+            "signatures": ["464f524d", "41494646"],
+            "offset": 0,
+            "extension": ".aiff",
+            "note": "FORM container, AIFF at offset 8"
+        },
+        "ape": {
+            "mime": "audio/ape",
+            "signatures": ["4d414320"],
+            "offset": 0,
+            "extension": ".ape"
+        },
+        "opus": {
+            "mime": "audio/opus",
+            "signatures": ["4f676753"],
+            "offset": 0,
+            "extension": ".opus",
+            "note": "OggS container"
+        },
+        "amr": {
+            "mime": "audio/amr",
+            "signatures": ["2321414d52"],
+            "offset": 0,
+            "extension": ".amr"
+        },
+        "midi": {
+            "mime": "audio/midi",
+            "signatures": ["4d546864"],
+            "offset": 0,
+            "extension": ".mid"
+        },
+        "mid": {
+            "mime": "audio/midi",
+            "signatures": ["4d546864"],
+            "offset": 0,
+            "extension": ".midi"
+        }
+    }
+}                                                                                           
