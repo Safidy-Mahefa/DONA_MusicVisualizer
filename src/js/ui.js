@@ -120,12 +120,21 @@ document.addEventListener('DOMContentLoaded', () => {
             panels[panelName].style.display = 'block';
             panels[panelName].classList.add('active');
         }
+
     }
 
     // Ajouter les écouteurs d'événements
     activityItems.forEach(item => {
         item.addEventListener('click', (e) => {
             const panelName = item.getAttribute('data-panel');
+
+            //Un traitement spécial pour cet élément
+            if (panelName=== 'menu') {
+                const sideBarMenu= document.querySelector('.sidebar');
+                sideBarMenu.classList.toggle('uncollapsed');
+                return;
+            }
+
             if (!item.classList.contains('export-disabled')) {
                 switchPanel(panelName);
             }
