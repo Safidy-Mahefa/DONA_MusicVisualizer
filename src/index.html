@@ -1,749 +1,763 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dona - Audio Visualizer</title>
-    <!-- PWA manifest -->
-    <link rel="manifest" href="/manifest.json" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dona - Audio Visualizer</title>
+  <!-- PWA manifest -->
+  <link rel="manifest" href="/manifest.json" />
 
-    <!-- Theme browser -->
-    <meta name="theme-color" content="#000000" />
+  <!-- Theme browser -->
+  <meta name="theme-color" content="#000000" />
 
-    <!-- Icons -->
-    <link rel="icon" href="logo.png" sizes="192x192" />
-    <link rel="apple-touch-icon" href="logo.png" />
+  <!-- Icons -->
+  <link rel="icon" href="logo.png" sizes="192x192" />
+  <link rel="apple-touch-icon" href="logo.png" />
 
-    <link rel="stylesheet" href="./css/style.css">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="./css/all.min.css"/>
+  <link rel="stylesheet" href="./css/style.css">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="./css/all.min.css" />
 
-    <meta name="description" content="Music Visualizer - offline" />
+  <meta name="description" content="Music Visualizer - offline" />
 </head>
+
 <body>
-    <div class="app-container">
-        <!-- Activity Bar (du style VS Code) -->
-        <div class="activity-bar">
-            <div class="activity-item active" data-panel="files" title="Fichiers">
-                <i class="fa-solid fa-folder-open"></i>
-            </div>
-            <div class="activity-item" data-panel="settings" title="Paramètres">
-                <i class="fa-solid fa-gear"></i>
-            </div>
-            <div class="activity-item" data-panel="effects" title="Effets">
-                <i class="fa-solid fa-wand-magic-sparkles"></i>
-            </div>
-            <div class="activity-item export-disabled" data-panel="export" title="Export – En cours de production" aria-disabled="true">
-                <i class="fa-solid fa-download"></i>
-                <span class="coming-soon-badge">En prod</span>
-            </div>
-            <div class="activity-item" data-panel="info" title="Aide">
-                <i class="fa-solid fa-circle-info"></i>
-            </div>
-        </div>
-
-        <!-- Sidebar -->
-        <div class="sidebar active">
-            <div class="sidebar-header">
-                <img src="logo.png" class="logo" alt="logo" loading="lazy"> Audio Visualizer Pro
-            </div>
-            <div class="sidebar-content">
-                <!-- Panel Fichiers -->
-                <div class="panel-content" id="panel-files">
-                    <!-- Section Fichiers Audio -->
-                    <div class="sidebar-section">
-                        <div class="section-title"><i class="fa-solid fa-music"></i> Bibliothèque Audio</div>
-                        <label for="file" class="upload-btn">
-                            <i class="fa-solid fa-plus"></i>
-                            <span>Ajouter une playlist audio</span>
-                        </label>
-                        <input type="file" id="file" accept="audio/*" multiple>
-                        
-                        <div class="file-list audioList" id="audioList">
-                            <div class="file-item" style="color: #636e72; justify-content: center;">
-                                Aucun fichier audio
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Section Background -->
-                    <div class="sidebar-section">
-                        <div class="section-title"><i class="fa-regular fa-image"></i> Arrière-plans</div>
-                        <label for="bg" class="upload-btn secondary">
-                            <i class="fa-solid fa-plus"></i>
-                            <span>Ajouter une image</span>
-                        </label>
-                        <input type="file" id="bg" accept="image/*" multiple>
-                        
-                        <div class="file-list" id="bgList">
-                            <div class="file-item" style="color: #636e72; justify-content: center;">
-                                Aucun arrière-plan
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Section Visualisation -->
-                    <div class="sidebar-section">
-                        <div class="section-title"><i class="fa-solid fa-eye"></i> Visualisation</div>
-                        
-                        <div class="control-group">
-                            <label class="control-label">Mode de visualisation</label>
-                            <select id="modeSelect">
-                                <option value="bars"><i class="fa-solid fa-chart-bar"></i> Barres</option>
-                                <option value="circle"><i class="fa-regular fa-circle"></i> Cercle</option>
-                                <option value="wave"><i class="fa-solid fa-wave-square"></i> Vague</option>
-                                <option value="blob"><i class="fa-solid fa-water"></i>Blob</option>
-                                <option value="pulse-ring"><i class="fa-solid fa-water"></i>Pulse Ring</option>
-                                <option value="kaleidoscope"><i class="fa-solid fa-water"></i>Kaleidoscope</option>
-                            </select>
-                        </div>
-
-                        <div class="control-group">
-                            <label class="control-label">Couleur principale</label>
-                            <input type="color" id="primaryColor" value="#00b894" style="width: 100%; height: 40px; border-radius: 8px; border: 2px solid #e1e8ed; cursor: pointer;">
-                        </div>
-
-                        <div class="switch-group">
-                            <span class="control-label" style="margin: 0;">Couleur par défaut</span>
-                            <label class="switch">
-                                <input type="checkbox" id="defaultColor">
-                                <span class="slider-switch"></span>
-                            </label>
-                        </div>
-                    </div>
-
-                    <!-- Section Audio -->
-                    <div class="sidebar-section">
-                        <div class="section-title"><i class="fa-solid fa-sliders"></i> Paramètres Audio</div>
-                        
-                        <div class="control-group">
-                            <label class="control-label">FFT Size</label>
-                            <select id="fttSelect">
-                                <option value="512">512</option>
-                                <option value="1024">1024</option>
-                                <option value="2048" selected>2048</option>
-                                <option value="4096">4096</option>
-                                <option value="8192">8192</option>
-                            </select>
-                        </div>
-
-                        <div class="control-group">
-                            <label class="control-label">Lissage (Smoothing)</label>
-                            <input type="range" id="smooth" min="0" max="0.99" step="0.01" value="0.8">
-                            <div style="text-align: center; color: #636e72; font-size: 12px; margin-top: 4px;">
-                                <span id="smoothValue">0.80</span>
-                            </div>
-                        </div>
-
-                        <div class="control-group">
-                            <label class="control-label">Détection BPM</label>
-                            <span class="bpm-display" id="bpm">-- BPM</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Panel Paramètres -->
-                <div class="panel-content" id="panel-settings" style="display: none;">
-                    <div class="sidebar-section">
-                        <div class="section-title"><i class="fa-solid fa-palette"></i> Apparence</div>
-                        
-                        <div class="control-group">
-                            <label class="control-label">Thème</label>
-                            <select id="themeSelect">
-                                <option value="dark">Sombre</option>
-                                <option value="light">Clair</option>
-                                <option value="auto">Automatique</option>
-                            </select>
-                        </div>
-
-                        <div class="control-group">
-                            <label class="control-label">Langue</label>
-                            <select id="languageSelect">
-                                <option value="fr">Français</option>
-                                <option value="en">English</option>
-                                <option value="es">Español</option>
-                                <option value="de">Deutsch</option>
-                            </select>
-                        </div>
-
-                        <div class="switch-group">
-                            <span class="control-label" style="margin: 0;">Animations réduites</span>
-                            <label class="switch">
-                                <input type="checkbox" id="reducedMotion">
-                                <span class="slider-switch"></span>
-                            </label>
-                        </div>
-                    </div>
-
-                    <div class="sidebar-section">
-                        <div class="section-title"><i class="fa-solid fa-sliders"></i> Performance</div>
-                        
-                        <div class="control-group">
-                            <label class="control-label">Qualité du rendu</label>
-                            <select id="renderQuality">
-                                <option value="low">Basse (Économie d'énergie)</option>
-                                <option value="medium">Moyenne</option>
-                                <option value="high" selected>Haute</option>
-                                <option value="ultra">Ultra (Plus gourmand)</option>
-                            </select>
-                        </div>
-
-                        <div class="control-group">
-                            <label class="control-label">FPS cible</label>
-                            <select id="targetFPS">
-                                <option value="30">30 FPS</option>
-                                <option value="60" selected>60 FPS</option>
-                                <option value="120">120 FPS</option>
-                            </select>
-                        </div>
-
-                        <div class="switch-group">
-                            <span class="control-label" style="margin: 0;">Mode économie d'énergie</span>
-                            <label class="switch">
-                                <input type="checkbox" id="powerSaving">
-                                <span class="slider-switch"></span>
-                            </label>
-                        </div>
-
-                        <div class="switch-group">
-                            <span class="control-label" style="margin: 0;">Antialiasing</span>
-                            <label class="switch">
-                                <input type="checkbox" id="antialiasing" checked>
-                                <span class="slider-switch"></span>
-                            </label>
-                        </div>
-                    </div>
-
-                    <div class="sidebar-section">
-                        <div class="section-title"><i class="fa-solid fa-music"></i> Audio</div>
-                        
-                        <div class="control-group">
-                            <label class="control-label">Sortie audio</label>
-                            <select id="audioOutput">
-                                <option value="default">Par défaut</option>
-                            </select>
-                        </div>
-
-                        <div class="control-group">
-                            <label class="control-label">Égaliseur</label>
-                            <select id="equalizerPreset">
-                                <option value="off">Désactivé</option>
-                                <option value="flat">Plat</option>
-                                <option value="bass">Bass Boost</option>
-                                <option value="treble">Treble Boost</option>
-                                <option value="vocal">Vocal</option>
-                                <option value="electronic">Électronique</option>
-                            </select>
-                        </div>
-
-                        <div class="switch-group">
-                            <span class="control-label" style="margin: 0;">Normalisation audio</span>
-                            <label class="switch">
-                                <input type="checkbox" id="audioNormalization">
-                                <span class="slider-switch"></span>
-                            </label>
-                        </div>
-
-                        <div class="switch-group">
-                            <span class="control-label" style="margin: 0;">Crossfade entre pistes</span>
-                            <label class="switch">
-                                <input type="checkbox" id="crossfade">
-                                <span class="slider-switch"></span>
-                            </label>
-                        </div>
-                    </div>
-
-                    <div class="sidebar-section">
-                        <div class="section-title"><i class="fa-solid fa-keyboard"></i> Raccourcis clavier</div>
-                        
-                        <div class="shortcut-list">
-                            <div class="shortcut-item">
-                                <span>Lecture / Pause</span>
-                                <kbd>Espace</kbd>
-                            </div>
-                            <div class="shortcut-item">
-                                <span>Piste suivante</span>
-                                <kbd>→</kbd>
-                            </div>
-                            <div class="shortcut-item">
-                                <span>Piste précédente</span>
-                                <kbd>←</kbd>
-                            </div>
-                            <div class="shortcut-item">
-                                <span>Volume +</span>
-                                <kbd>↑</kbd>
-                            </div>
-                            <div class="shortcut-item">
-                                <span>Volume -</span>
-                                <kbd>↓</kbd>
-                            </div>
-                            <div class="shortcut-item">
-                                <span>Plein écran</span>
-                                <kbd>F</kbd>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="sidebar-section">
-                        <div class="section-title"><i class="fa-solid fa-database"></i> Données</div>
-                        
-                        <div class="control-group">
-                            <label class="control-label">Utilisation du stockage</label>
-                            <div class="storage-info">
-                                <div class="storage-bar">
-                                    <div class="storage-fill" id="storageFill" style="width: 25%;"></div>
-                                </div>
-                                <div style="display: flex; justify-content: space-between; margin-top: 8px; font-size: 12px; color: #636e72;">
-                                    <span id="storageUsed">0 MB utilisés</span>
-                                    <span id="storageTotal">sur 50 MB</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <button class="upload-btn secondary" id="clearCache" style="width: 100%; margin-top: 12px;">
-                            <i class="fa-solid fa-broom"></i>
-                            <span>Vider le cache</span>
-                        </button>
-
-                        <button class="upload-btn secondary" id="exportSettings" style="width: 100%; margin-top: 12px;">
-                            <i class="fa-solid fa-file-export"></i>
-                            <span>Exporter les paramètres</span>
-                        </button>
-
-                        <button class="upload-btn secondary" id="importSettings" style="width: 100%; margin-top: 12px;">
-                            <i class="fa-solid fa-file-import"></i>
-                            <span>Importer les paramètres</span>
-                        </button>
-                    </div>
-
-                    <div class="sidebar-section">
-                        <div class="section-title"><i class="fa-solid fa-shield-halved"></i> Confidentialité</div>
-                        
-                        <div class="switch-group">
-                            <span class="control-label" style="margin: 0;">Envoyer des rapports d'erreur</span>
-                            <label class="switch">
-                                <input type="checkbox" id="errorReporting" checked>
-                                <span class="slider-switch"></span>
-                            </label>
-                        </div>
-
-                        <div class="switch-group">
-                            <span class="control-label" style="margin: 0;">Statistiques d'utilisation</span>
-                            <label class="switch">
-                                <input type="checkbox" id="analytics" checked>
-                                <span class="slider-switch"></span>
-                            </label>
-                        </div>
-
-                        <button class="upload-btn secondary" id="resetSettings" style="width: 100%; margin-top: 12px;">
-                            <i class="fa-solid fa-rotate-left"></i>
-                            <span>Réinitialiser tous les paramètres</span>
-                        </button>
-                    </div>
-
-                    <!-- Overlay Indisponible -->
-                         <div class="export-overlay">
-                            <div>Paramètres</div>
-                            <small>En cours de production – indisponible pour le moment</small>
-                        </div>
-                </div>
-
-                <!-- Panel Effets -->
-                <div class="panel-content" id="panel-effects" style="display: none;">
-                    <div class="sidebar-section section-effets">
-                        <div class="section-title"><i class="fa-solid fa-wand-magic-sparkles"></i> Effets Visuels</div>
-                        
-                        <div class="switch-group">
-                            <span class="control-label" style="margin: 0;">Effet de glow</span>
-                            <label class="switch">
-                                <input type="checkbox" id="glowEffect" checked>
-                                <span class="slider-switch"></span>
-                            </label>
-                        </div>
-
-                        <div class="switch-group">
-                            <span class="control-label" style="margin: 0;">Particules</span>
-                            <label class="switch">
-                                <input type="checkbox" id="particles">
-                                <span class="slider-switch"></span>
-                            </label>
-                        </div>
-
-                        <div class="switch-group">
-                            <span class="control-label" style="margin: 0;">Mode miroir</span>
-                            <label class="switch">
-                                <input type="checkbox" id="mirror">
-                                <span class="slider-switch"></span>
-                            </label>
-                        </div>
-
-                        <div class="switch-group">
-                            <span class="control-label" style="margin: 0;">Animation de fond</span>
-                            <label class="switch">
-                                <input type="checkbox" id="bgAnimation">
-                                <span class="slider-switch"></span>
-                            </label>
-                        </div>
-
-                        <!-- Overlay Indisponible pour les fonctionnalités indisponibles -->
-                         <div class="export-overlay">
-                            <div>Fonctionnalités effets</div>
-                            <small>En cours de production – indisponible pour le moment</small>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Panel Export -->
-                <div class="panel-content" id="panel-export" style="display: none;">
-                    <div class="sidebar-section export-section" aria-disabled="true">
-                        <div class="section-title"><i class="fa-solid fa-film"></i> Qualité d'export</div>
-                        
-                        <div class="control-group">
-                            <label class="control-label">Qualité vidéo</label>
-                            <select id="qualitySelect" disabled>
-                                <option value="low">Low (2 Mbps)</option>
-                                <option value="medium">Medium (5 Mbps)</option>
-                                <option value="high" selected>High (8 Mbps)</option>
-                                <option value="ultra">Ultra (15 Mbps)</option>
-                            </select>
-                        </div>
-
-                        <div class="control-group">
-                            <label class="control-label">Format</label>
-                            <select id="exportFormat" disabled>
-                                <option value="webm">Webm (Recommandé)</option>
-                                <option value="mp4">Mp4 (Conversion requise)</option>
-                            </select>
-                        </div>
-
-                        <div class="export-info">
-                            <i class="fa-solid fa-info-circle"></i>
-                            <p style="font-size: 12px; color: #636e72; margin: 8px 0 0 0;">
-                                Le fichier sera en .webm Utilisez un convertisseur en ligne pour le format Mp4.
-                            </p>
-                        </div>
-
-                        <!-- Overlay indisponible -->
-                        <div class="export-overlay">
-                            <div>Fonctionnalités d'export vidéo</div>
-                            <small>En cours de production – indisponible pour le moment</small>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Panel Aide -->
-                <div class="panel-content" id="panel-info" style="display: none;">
-                    <div class="sidebar-section">
-                        <div class="section-title"><i class="fa-solid fa-rocket"></i> Démarrage rapide</div>
-                        
-                        <div class="help-steps">
-                            <div class="help-step">
-                                <div class="help-step-number">1</div>
-                                <div class="help-step-content">
-                                    <h4>Ajouter des fichiers audio</h4>
-                                    <p>Cliquez sur "Ajouter une playlist audio" dans l'onglet Fichiers pour importer vos morceaux.</p>
-                                </div>
-                            </div>
-                            <div class="help-step">
-                                <div class="help-step-number">2</div>
-                                <div class="help-step-content">
-                                    <h4>Choisir un mode de visualisation</h4>
-                                    <p>Sélectionnez parmi Barres, Cercle, Vague, Blob, Pulse Ring ou Kaleidoscope.</p>
-                                </div>
-                            </div>
-                            <div class="help-step">
-                                <div class="help-step-number">3</div>
-                                <div class="help-step-content">
-                                    <h4>Personnaliser les effets</h4>
-                                    <p>Activez les effets visuels comme le glow, les particules ou le mode miroir.</p>
-                                </div>
-                            </div>
-                            <div class="help-step">
-                                <div class="help-step-number">4</div>
-                                <div class="help-step-content">
-                                    <h4>Profiter de votre musique</h4>
-                                    <p>Appuyez sur lecture et admirez la visualisation en temps réel!</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="sidebar-section">
-                        <div class="section-title"><i class="fa-solid fa-keyboard"></i> Raccourcis clavier</div>
-                        
-                        <div class="shortcut-grid">
-                            <div class="shortcut-card">
-                                <kbd>Espace</kbd>
-                                <span>Lecture / Pause</span>
-                            </div>
-                            <div class="shortcut-card">
-                                <kbd>→</kbd>
-                                <span>Piste suivante</span>
-                            </div>
-                            <div class="shortcut-card">
-                                <kbd>←</kbd>
-                                <span>Piste précédente</span>
-                            </div>
-                            <div class="shortcut-card">
-                                <kbd>↑</kbd>
-                                <span>Volume +</span>
-                            </div>
-                            <div class="shortcut-card">
-                                <kbd>↓</kbd>
-                                <span>Volume -</span>
-                            </div>
-                            <div class="shortcut-card">
-                                <kbd>F</kbd>
-                                <span>Plein écran</span>
-                            </div>
-                            <div class="shortcut-card">
-                                <kbd>M</kbd>
-                                <span>Muet</span>
-                            </div>
-                            <div class="shortcut-card">
-                                <kbd>R</kbd>
-                                <span>Répéter</span>
-                            </div>
-                            <div class="shortcut-card">
-                                <kbd>S</kbd>
-                                <span>Aléatoire</span>
-                            </div>
-
-                             <!-- Overlay Indisponible -->
-                            <div class="export-overlay">
-                                <div>Fonctionnalités raccourcis clavier</div>
-                                <small>En cours de production — indisponible pour le moment</small>
-                            </div>
-                        </div>
-
-                       
-                    </div>
-
-                    <div class="sidebar-section">
-                        <div class="section-title"><i class="fa-solid fa-circle-question"></i> FAQ</div>
-                        
-                        <div class="faq-list">
-                            <details class="faq-item">
-                                <summary>Quels formats audio sont supportés?</summary>
-                                <p>L'application supporte tous les formats audio courants: MP3, WAV, OGG, FLAC, AAC, et plus encore.</p>
-                            </details>
-                            
-                            <details class="faq-item">
-                                <summary>Comment améliorer les performances?</summary>
-                                <p>Allez dans Paramètres > Performance et réduisez la qualité du rendu ou activez le mode économie d'énergie.</p>
-                            </details>
-                            
-                            <details class="faq-item">
-                                <summary>Mes fichiers sont-ils envoyés sur un serveur?</summary>
-                                <p>Non, tous les fichiers restent sur votre appareil. L'application fonctionne entièrement hors ligne.</p>
-                            </details>
-                            
-                            <details class="faq-item">
-                                <summary>Comment changer la couleur de visualisation?</summary>
-                                <p>Dans l'onglet Fichiers, utilisez le sélecteur "Couleur principale" pour personnaliser votre visualisation.</p>
-                            </details>
-                            
-                            <details class="faq-item">
-                                <summary>Puis-je utiliser mes propres arrière-plans?</summary>
-                                <p>Oui! Cliquez sur "Ajouter une image" dans la section Arrière-plans pour importer vos propres images.</p>
-                            </details>
-                            
-                            <details class="faq-item">
-                                <summary>L'export vidéo est-il disponible?</summary>
-                                <p>La fonctionnalité d'export vidéo est actuellement en développement et sera disponible prochainement.</p>
-                            </details>
-                        </div>
-                    </div>
-
-                    <div class="sidebar-section">
-                        <div class="section-title"><i class="fa-solid fa-lightbulb"></i> Astuces</div>
-                        
-                        <div class="tips-list">
-                            <div class="tip-item">
-                                <i class="fa-solid fa-star"></i>
-                                <div>
-                                    <strong>Mode Kaleidoscope</strong>
-                                    <p>Combiné avec des particules pour un effet psychédélique impressionnant!</p>
-                                </div>
-                            </div>
-                            <div class="tip-item">
-                                <i class="fa-solid fa-star"></i>
-                                <div>
-                                    <strong>FFT Size élevé</strong>
-                                    <p>Augmentez le FFT Size à 8192 pour une visualisation plus détaillée (consomme plus de ressources).</p>
-                                </div>
-                            </div>
-                            <div class="tip-item">
-                                <i class="fa-solid fa-star"></i>
-                                <div>
-                                    <strong>Mode miroir</strong>
-                                    <p>Créez des effets symétriques hypnotiques avec n'importe quel mode de visualisation.</p>
-                                </div>
-                            </div>
-                            <div class="tip-item">
-                                <i class="fa-solid fa-star"></i>
-                                <div>
-                                    <strong>Plein écran</strong>
-                                    <p>Appuyez sur F ou utilisez le bouton pour une expérience immersive totale.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="sidebar-section">
-                        <div class="section-title"><i class="fa-solid fa-info-circle"></i> À propos</div>
-                        
-                        <div class="about-content">
-                            <div class="about-item">
-                                <strong>Version</strong>
-                                <span>1.0.0 Beta</span>
-                            </div>
-                            <div class="about-item">
-                                <strong>Dernière mise à jour</strong>
-                                <span>Décembre 2025</span>
-                            </div>
-                            <div class="about-item">
-                                <strong>Développé par</strong>
-                                <span>Safidy Mahefa</span>
-                            </div>
-                        </div>
-
-                        <div class="about-links">
-                            <a href="#" class="about-link">
-                                <i class="fa-solid fa-globe"></i>
-                                Site web
-                            </a>
-                            <a href="#" class="about-link">
-                                <i class="fa-brands fa-github"></i>
-                                GitHub
-                            </a>
-                            <a href="#" class="about-link">
-                                <i class="fa-solid fa-bug"></i>
-                                Signaler un bug
-                            </a>
-                            <a href="#" class="about-link">
-                                <i class="fa-solid fa-heart"></i>
-                                Faire un don
-                            </a>
-                        </div>
-
-                        <div class="about-footer">
-                            <p>© 2025 Dona. Tous droits réservés.</p>
-                            <p style="font-size: 11px; color: #95a5a6; margin-top: 8px;">
-                                Cette application respecte votre vie privée.<br>
-                                Aucune donnée n'est collectée ou envoyée à des serveurs tiers.
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="sidebar-section">
-                        <div class="section-title"><i class="fa-solid fa-envelope"></i> Support</div>
-                        
-                        <p style="color: #636e72; font-size: 13px; line-height: 1.6; margin-bottom: 16px;">
-                            Besoin d'aide? Vous avez une question ou une suggestion? N'hésitez pas à nous contacter!
-                        </p>
-
-                        <button class="upload-btn" style="width: 100%; margin-bottom: 12px;">
-                            <i class="fa-solid fa-envelope"></i>
-                            <span>Contacter le support</span>
-                        </button>
-
-                        <button class="upload-btn secondary" style="width: 100%;">
-                            <i class="fa-solid fa-book"></i>
-                            <span>Documentation complète</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Zone principale -->
-        <div class="main-content">
-            <!-- Header -->
-            <div class="header">
-                <div class="header-title"><i class="fa-solid fa-palette"></i> Espace de travail</div>
-                <div class="header-actions">
-                    <button class="header-btn export-disabled" disabled aria-disabled="true" title="Screenshot – En cours de production">
-                        <i class="fa-solid fa-camera"></i>
-                        <span>Screenshot</span>
-                        <span class="coming-soon-badge">En prod</span>
-                    </button>
-                    <button class="header-btn export-disabled" disabled aria-disabled="true" title="Sauvegarder – En cours de production">
-                        <i class="fa-solid fa-circle-dot"></i>
-                        <span>Sauvegarder</span>
-                        <span class="coming-soon-badge">En prod</span>
-                    </button>
-
-                    <button class="header-btn primary" id="record" style="display: none;">
-                        <i class="fa-solid fa-circle-dot"></i>
-                        <span>Enregistrer</span>
-                    </button>
-
-                    <button class="header-btn success" id="export" style="display: none;">
-                        <i class="fa-solid fa-download"></i>
-                        <span>Exporter</span>
-                    </button>
-
-                    <button class="header-btn danger">
-                        <a href="index.html">
-                            <i class="fa-solid fa-trash"></i>
-                            <span>Effacer</span></a>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Canvas -->
-            <div class="canvas-area">
-                <div id="canvaContainer">
-                    <div class="canvas-placeholder">
-                        <div class="canvas-placeholder-icon"><i class="fa-solid fa-music"></i></div>
-                        <div class="canvas-placeholder-text">Chargez un fichier audio pour commencer</div>
-                    </div>
-                    <canvas id="c"></canvas>
-                </div>
-            </div>
-
-            <!-- Contrôles de lecture -->
-            <div class="playback-controls">
-                <div class="playback-left">
-                    <button class="control-btn" title="Répéter"><i class="repeatButton fa-solid fa-repeat"></i></button>
-                    <button class="control-btn" title="Précédent"><i class="prevBtn fa-solid fa-backward-step"></i></button>
-                    <button class="play-btn" id="play"><i class="fa-solid fa-play"></i></button>
-                    <button class="control-btn" title="Suivant"><i class="nextBtn fa-solid fa-forward-step"></i></button>
-                    <button class="control-btn" title="Aléatoire"><i class="shuffleButton fa-solid fa-shuffle"></i></button>
-                </div>
-                
-                <div class="playback-center">
-                    <div class="track-info">
-                        <div class="track-header">
-                            <div class="track-name" id="trackName">Aucun fichier sélectionné</div>
-                            <div class="track-time">
-                                <span id="currentTime">0:00</span> / <span id="duration">0:00</span>
-                            </div>
-                        </div>
-                        <div class="progress-bar">
-                            <div class="progress-fill" id="progressFill"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="playback-right">
-                    <div class="volume-control">
-                        <span class="volume-icon"><i class="fa-solid fa-volume-high"></i></span>
-                        <input type="range" class="volume-slider" id="volume" min="0" max="100" value="80">
-                    </div>
-                    <button class="control-btn" title="Plein écran"><i class="fa-solid fa-expand"></i></button>
-                </div>
-            </div>
-        </div>
+  <div class="app-container">
+    <!-- Activity Bar (du style VS Code) -->
+    <div class="activity-bar">
+      <div class="activity-item active" data-panel="files" title="Fichiers">
+        <i class="fa-solid fa-folder-open"></i>
+      </div>
+      <div class="activity-item" data-panel="settings" title="Paramètres">
+        <i class="fa-solid fa-gear"></i>
+      </div>
+      <div class="activity-item" data-panel="effects" title="Effets">
+        <i class="fa-solid fa-wand-magic-sparkles"></i>
+      </div>
+      <div class="activity-item export-disabled" data-panel="export" title="Export – En cours de production"
+        aria-disabled="true">
+        <i class="fa-solid fa-download"></i>
+        <span class="coming-soon-badge">En prod</span>
+      </div>
+      <div class="activity-item" data-panel="info" title="Aide">
+        <i class="fa-solid fa-circle-info"></i>
+      </div>
     </div>
 
-    <!-- Audio element (caché) -->
-    <audio id="audio" style="display: none;"></audio>
+    <!-- Sidebar -->
+    <div class="sidebar active">
+      <div class="sidebar-header">
+        <img src="logo.png" class="logo" alt="logo" loading="lazy"> Audio Visualizer Pro
+      </div>
+      <div class="sidebar-content">
+        <!-- Panel Fichiers -->
+        <div class="panel-content" id="panel-files">
+          <!-- Section Fichiers Audio -->
+          <div class="sidebar-section">
+            <div class="section-title"><i class="fa-solid fa-music"></i> Bibliothèque Audio</div>
+            <label for="file" class="upload-btn">
+              <i class="fa-solid fa-plus"></i>
+              <span>Ajouter une playlist audio</span>
+            </label>
+            <input type="file" id="file" accept="audio/*" multiple>
 
-    <script type="module" src="./js/app.js"></script>
-    <script src="./js/ui.js"></script>
-    <!-- Service Worker registration pour PWA -->
-    <script src="/sw-register.js"></script>
+            <div class="file-list audioList" id="audioList">
+              <div class="file-item" style="color: #636e72; justify-content: center;">
+                Aucun fichier audio
+              </div>
+            </div>
+          </div>
+
+          <!-- Section Background -->
+          <div class="sidebar-section">
+            <div class="section-title"><i class="fa-regular fa-image"></i> Arrière-plans</div>
+            <label for="bg" class="upload-btn secondary">
+              <i class="fa-solid fa-plus"></i>
+              <span>Ajouter une image</span>
+            </label>
+            <input type="file" id="bg" accept="image/*" multiple>
+
+            <div class="file-list" id="bgList">
+              <div class="file-item" style="color: #636e72; justify-content: center;">
+                Aucun arrière-plan
+              </div>
+            </div>
+          </div>
+
+          <!-- Section Visualisation -->
+          <div class="sidebar-section">
+            <div class="section-title"><i class="fa-solid fa-eye"></i> Visualisation</div>
+
+            <div class="control-group">
+              <label class="control-label">Mode de visualisation</label>
+              <select id="modeSelect">
+                <option value="bars"><i class="fa-solid fa-chart-bar"></i> Barres</option>
+                <option value="circle"><i class="fa-regular fa-circle"></i> Cercle</option>
+                <option value="wave"><i class="fa-solid fa-wave-square"></i> Vague</option>
+                <option value="blob"><i class="fa-solid fa-water"></i>Blob</option>
+                <option value="pulse-ring"><i class="fa-solid fa-water"></i>Pulse Ring</option>
+                <option value="kaleidoscope"><i class="fa-solid fa-water"></i>Kaleidoscope</option>
+              </select>
+            </div>
+
+            <div class="control-group">
+              <label class="control-label">Couleur principale</label>
+              <input type="color" id="primaryColor" value="#00b894"
+                style="width: 100%; height: 40px; border-radius: 8px; border: 2px solid #e1e8ed; cursor: pointer;">
+            </div>
+
+            <div class="switch-group">
+              <span class="control-label" style="margin: 0;">Couleur par défaut</span>
+              <label class="switch">
+                <input type="checkbox" id="defaultColor">
+                <span class="slider-switch"></span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Section Audio -->
+          <div class="sidebar-section">
+            <div class="section-title"><i class="fa-solid fa-sliders"></i> Paramètres Audio</div>
+
+            <div class="control-group">
+              <label class="control-label">FFT Size</label>
+              <select id="fttSelect">
+                <option value="512">512</option>
+                <option value="1024">1024</option>
+                <option value="2048" selected>2048</option>
+                <option value="4096">4096</option>
+                <option value="8192">8192</option>
+              </select>
+            </div>
+
+            <div class="control-group">
+              <label class="control-label">Lissage (Smoothing)</label>
+              <input type="range" id="smooth" min="0" max="0.99" step="0.01" value="0.8">
+              <div style="text-align: center; color: #636e72; font-size: 12px; margin-top: 4px;">
+                <span id="smoothValue">0.80</span>
+              </div>
+            </div>
+
+            <div class="control-group">
+              <label class="control-label">Détection BPM</label>
+              <span class="bpm-display" id="bpm">-- BPM</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel Paramètres -->
+        <div class="panel-content" id="panel-settings" style="display: none;">
+          <div class="sidebar-section">
+            <div class="section-title"><i class="fa-solid fa-palette"></i> Apparence</div>
+
+            <div class="control-group">
+              <label class="control-label">Thème</label>
+              <select id="themeSelect">
+                <option value="dark">Sombre</option>
+                <option value="light">Clair</option>
+                <option value="auto">Automatique</option>
+              </select>
+            </div>
+
+            <div class="control-group">
+              <label class="control-label">Langue</label>
+              <select id="languageSelect">
+                <option value="fr">Français</option>
+                <option value="en">English</option>
+                <option value="es">Español</option>
+                <option value="de">Deutsch</option>
+              </select>
+            </div>
+
+            <div class="switch-group">
+              <span class="control-label" style="margin: 0;">Animations réduites</span>
+              <label class="switch">
+                <input type="checkbox" id="reducedMotion">
+                <span class="slider-switch"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="sidebar-section">
+            <div class="section-title"><i class="fa-solid fa-sliders"></i> Performance</div>
+
+            <div class="control-group">
+              <label class="control-label">Qualité du rendu</label>
+              <select id="renderQuality">
+                <option value="low">Basse (Économie d'énergie)</option>
+                <option value="medium">Moyenne</option>
+                <option value="high" selected>Haute</option>
+                <option value="ultra">Ultra (Plus gourmand)</option>
+              </select>
+            </div>
+
+            <div class="control-group">
+              <label class="control-label">FPS cible</label>
+              <select id="targetFPS">
+                <option value="30">30 FPS</option>
+                <option value="60" selected>60 FPS</option>
+                <option value="120">120 FPS</option>
+              </select>
+            </div>
+
+            <div class="switch-group">
+              <span class="control-label" style="margin: 0;">Mode économie d'énergie</span>
+              <label class="switch">
+                <input type="checkbox" id="powerSaving">
+                <span class="slider-switch"></span>
+              </label>
+            </div>
+
+            <div class="switch-group">
+              <span class="control-label" style="margin: 0;">Antialiasing</span>
+              <label class="switch">
+                <input type="checkbox" id="antialiasing" checked>
+                <span class="slider-switch"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="sidebar-section">
+            <div class="section-title"><i class="fa-solid fa-music"></i> Audio</div>
+
+            <div class="control-group">
+              <label class="control-label">Sortie audio</label>
+              <select id="audioOutput">
+                <option value="default">Par défaut</option>
+              </select>
+            </div>
+
+            <div class="control-group">
+              <label class="control-label">Égaliseur</label>
+              <select id="equalizerPreset">
+                <option value="off">Désactivé</option>
+                <option value="flat">Plat</option>
+                <option value="bass">Bass Boost</option>
+                <option value="treble">Treble Boost</option>
+                <option value="vocal">Vocal</option>
+                <option value="electronic">Électronique</option>
+              </select>
+            </div>
+
+            <div class="switch-group">
+              <span class="control-label" style="margin: 0;">Normalisation audio</span>
+              <label class="switch">
+                <input type="checkbox" id="audioNormalization">
+                <span class="slider-switch"></span>
+              </label>
+            </div>
+
+            <div class="switch-group">
+              <span class="control-label" style="margin: 0;">Crossfade entre pistes</span>
+              <label class="switch">
+                <input type="checkbox" id="crossfade">
+                <span class="slider-switch"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="sidebar-section">
+            <div class="section-title"><i class="fa-solid fa-keyboard"></i> Raccourcis clavier</div>
+
+            <div class="shortcut-list">
+              <div class="shortcut-item">
+                <span>Lecture / Pause</span>
+                <kbd>Espace</kbd>
+              </div>
+              <div class="shortcut-item">
+                <span>Piste suivante</span>
+                <kbd>→</kbd>
+              </div>
+              <div class="shortcut-item">
+                <span>Piste précédente</span>
+                <kbd>←</kbd>
+              </div>
+              <div class="shortcut-item">
+                <span>Volume +</span>
+                <kbd>↑</kbd>
+              </div>
+              <div class="shortcut-item">
+                <span>Volume -</span>
+                <kbd>↓</kbd>
+              </div>
+              <div class="shortcut-item">
+                <span>Plein écran</span>
+                <kbd>F</kbd>
+              </div>
+            </div>
+          </div>
+
+          <div class="sidebar-section">
+            <div class="section-title"><i class="fa-solid fa-database"></i> Données</div>
+
+            <div class="control-group">
+              <label class="control-label">Utilisation du stockage</label>
+              <div class="storage-info">
+                <div class="storage-bar">
+                  <div class="storage-fill" id="storageFill" style="width: 25%;"></div>
+                </div>
+                <div
+                  style="display: flex; justify-content: space-between; margin-top: 8px; font-size: 12px; color: #636e72;">
+                  <span id="storageUsed">0 MB utilisés</span>
+                  <span id="storageTotal">sur 50 MB</span>
+                </div>
+              </div>
+            </div>
+
+            <button class="upload-btn secondary" id="clearCache" style="width: 100%; margin-top: 12px;">
+              <i class="fa-solid fa-broom"></i>
+              <span>Vider le cache</span>
+            </button>
+
+            <button class="upload-btn secondary" id="exportSettings" style="width: 100%; margin-top: 12px;">
+              <i class="fa-solid fa-file-export"></i>
+              <span>Exporter les paramètres</span>
+            </button>
+
+            <button class="upload-btn secondary" id="importSettings" style="width: 100%; margin-top: 12px;">
+              <i class="fa-solid fa-file-import"></i>
+              <span>Importer les paramètres</span>
+            </button>
+          </div>
+
+          <div class="sidebar-section">
+            <div class="section-title"><i class="fa-solid fa-shield-halved"></i> Confidentialité</div>
+
+            <div class="switch-group">
+              <span class="control-label" style="margin: 0;">Envoyer des rapports d'erreur</span>
+              <label class="switch">
+                <input type="checkbox" id="errorReporting" checked>
+                <span class="slider-switch"></span>
+              </label>
+            </div>
+
+            <div class="switch-group">
+              <span class="control-label" style="margin: 0;">Statistiques d'utilisation</span>
+              <label class="switch">
+                <input type="checkbox" id="analytics" checked>
+                <span class="slider-switch"></span>
+              </label>
+            </div>
+
+            <button class="upload-btn secondary" id="resetSettings" style="width: 100%; margin-top: 12px;">
+              <i class="fa-solid fa-rotate-left"></i>
+              <span>Réinitialiser tous les paramètres</span>
+            </button>
+          </div>
+
+          <!-- Overlay Indisponible -->
+          <div class="export-overlay">
+            <div>Paramètres</div>
+            <small>En cours de production – indisponible pour le moment</small>
+          </div>
+        </div>
+
+        <!-- Panel Effets -->
+        <div class="panel-content" id="panel-effects" style="display: none;">
+          <div class="sidebar-section section-effets">
+            <div class="section-title"><i class="fa-solid fa-wand-magic-sparkles"></i> Effets Visuels</div>
+
+            <div class="switch-group">
+              <span class="control-label" style="margin: 0;">Effet de glow</span>
+              <label class="switch">
+                <input type="checkbox" id="glowEffect" checked>
+                <span class="slider-switch"></span>
+              </label>
+            </div>
+
+            <div class="switch-group">
+              <span class="control-label" style="margin: 0;">Particules</span>
+              <label class="switch">
+                <input type="checkbox" id="particles">
+                <span class="slider-switch"></span>
+              </label>
+            </div>
+
+            <div class="switch-group">
+              <span class="control-label" style="margin: 0;">Mode miroir</span>
+              <label class="switch">
+                <input type="checkbox" id="mirror">
+                <span class="slider-switch"></span>
+              </label>
+            </div>
+
+            <div class="switch-group">
+              <span class="control-label" style="margin: 0;">Animation de fond</span>
+              <label class="switch">
+                <input type="checkbox" id="bgAnimation">
+                <span class="slider-switch"></span>
+              </label>
+            </div>
+
+            <!-- Overlay Indisponible pour les fonctionnalités indisponibles -->
+            <div class="export-overlay">
+              <div>Fonctionnalités effets</div>
+              <small>En cours de production – indisponible pour le moment</small>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel Export -->
+        <div class="panel-content" id="panel-export" style="display: none;">
+          <div class="sidebar-section export-section" aria-disabled="true">
+            <div class="section-title"><i class="fa-solid fa-film"></i> Qualité d'export</div>
+
+            <div class="control-group">
+              <label class="control-label">Qualité vidéo</label>
+              <select id="qualitySelect" disabled>
+                <option value="low">Low (2 Mbps)</option>
+                <option value="medium">Medium (5 Mbps)</option>
+                <option value="high" selected>High (8 Mbps)</option>
+                <option value="ultra">Ultra (15 Mbps)</option>
+              </select>
+            </div>
+
+            <div class="control-group">
+              <label class="control-label">Format</label>
+              <select id="exportFormat" disabled>
+                <option value="webm">Webm (Recommandé)</option>
+                <option value="mp4">Mp4 (Conversion requise)</option>
+              </select>
+            </div>
+
+            <div class="export-info">
+              <i class="fa-solid fa-info-circle"></i>
+              <p style="font-size: 12px; color: #636e72; margin: 8px 0 0 0;">
+                Le fichier sera en .webm Utilisez un convertisseur en ligne pour le format Mp4.
+              </p>
+            </div>
+
+            <!-- Overlay indisponible -->
+            <div class="export-overlay">
+              <div>Fonctionnalités d'export vidéo</div>
+              <small>En cours de production – indisponible pour le moment</small>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel Aide -->
+        <div class="panel-content" id="panel-info" style="display: none;">
+          <div class="sidebar-section">
+            <div class="section-title"><i class="fa-solid fa-rocket"></i> Démarrage rapide</div>
+
+            <div class="help-steps">
+              <div class="help-step">
+                <div class="help-step-number">1</div>
+                <div class="help-step-content">
+                  <h4>Ajouter des fichiers audio</h4>
+                  <p>Cliquez sur "Ajouter une playlist audio" dans l'onglet Fichiers pour importer vos morceaux.</p>
+                </div>
+              </div>
+              <div class="help-step">
+                <div class="help-step-number">2</div>
+                <div class="help-step-content">
+                  <h4>Choisir un mode de visualisation</h4>
+                  <p>Sélectionnez parmi Barres, Cercle, Vague, Blob, Pulse Ring ou Kaleidoscope.</p>
+                </div>
+              </div>
+              <div class="help-step">
+                <div class="help-step-number">3</div>
+                <div class="help-step-content">
+                  <h4>Personnaliser les effets</h4>
+                  <p>Activez les effets visuels comme le glow, les particules ou le mode miroir.</p>
+                </div>
+              </div>
+              <div class="help-step">
+                <div class="help-step-number">4</div>
+                <div class="help-step-content">
+                  <h4>Profiter de votre musique</h4>
+                  <p>Appuyez sur lecture et admirez la visualisation en temps réel!</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="sidebar-section">
+            <div class="section-title"><i class="fa-solid fa-keyboard"></i> Raccourcis clavier</div>
+
+            <div class="shortcut-grid">
+              <div class="shortcut-card">
+                <kbd>Espace</kbd>
+                <span>Lecture / Pause</span>
+              </div>
+              <div class="shortcut-card">
+                <kbd>→</kbd>
+                <span>Piste suivante</span>
+              </div>
+              <div class="shortcut-card">
+                <kbd>←</kbd>
+                <span>Piste précédente</span>
+              </div>
+              <div class="shortcut-card">
+                <kbd>↑</kbd>
+                <span>Volume +</span>
+              </div>
+              <div class="shortcut-card">
+                <kbd>↓</kbd>
+                <span>Volume -</span>
+              </div>
+              <div class="shortcut-card">
+                <kbd>F</kbd>
+                <span>Plein écran</span>
+              </div>
+              <div class="shortcut-card">
+                <kbd>M</kbd>
+                <span>Muet</span>
+              </div>
+              <div class="shortcut-card">
+                <kbd>R</kbd>
+                <span>Répéter</span>
+              </div>
+              <div class="shortcut-card">
+                <kbd>S</kbd>
+                <span>Aléatoire</span>
+              </div>
+
+              <!-- Overlay Indisponible -->
+              <div class="export-overlay">
+                <div>Fonctionnalités raccourcis clavier</div>
+                <small>En cours de production — indisponible pour le moment</small>
+              </div>
+            </div>
+
+
+          </div>
+
+          <div class="sidebar-section">
+            <div class="section-title"><i class="fa-solid fa-circle-question"></i> FAQ</div>
+
+            <div class="faq-list">
+              <details class="faq-item">
+                <summary>Quels formats audio sont supportés?</summary>
+                <p>L'application supporte tous les formats audio courants: MP3, WAV, OGG, FLAC, AAC, et plus encore.</p>
+              </details>
+
+              <details class="faq-item">
+                <summary>Comment améliorer les performances?</summary>
+                <p>Allez dans Paramètres > Performance et réduisez la qualité du rendu ou activez le mode économie
+                  d'énergie.</p>
+              </details>
+
+              <details class="faq-item">
+                <summary>Mes fichiers sont-ils envoyés sur un serveur?</summary>
+                <p>Non, tous les fichiers restent sur votre appareil. L'application fonctionne entièrement hors ligne.
+                </p>
+              </details>
+
+              <details class="faq-item">
+                <summary>Comment changer la couleur de visualisation?</summary>
+                <p>Dans l'onglet Fichiers, utilisez le sélecteur "Couleur principale" pour personnaliser votre
+                  visualisation.</p>
+              </details>
+
+              <details class="faq-item">
+                <summary>Puis-je utiliser mes propres arrière-plans?</summary>
+                <p>Oui! Cliquez sur "Ajouter une image" dans la section Arrière-plans pour importer vos propres images.
+                </p>
+              </details>
+
+              <details class="faq-item">
+                <summary>L'export vidéo est-il disponible?</summary>
+                <p>La fonctionnalité d'export vidéo est actuellement en développement et sera disponible prochainement.
+                </p>
+              </details>
+            </div>
+          </div>
+
+          <div class="sidebar-section">
+            <div class="section-title"><i class="fa-solid fa-lightbulb"></i> Astuces</div>
+
+            <div class="tips-list">
+              <div class="tip-item">
+                <i class="fa-solid fa-star"></i>
+                <div>
+                  <strong>Mode Kaleidoscope</strong>
+                  <p>Combiné avec des particules pour un effet psychédélique impressionnant!</p>
+                </div>
+              </div>
+              <div class="tip-item">
+                <i class="fa-solid fa-star"></i>
+                <div>
+                  <strong>FFT Size élevé</strong>
+                  <p>Augmentez le FFT Size à 8192 pour une visualisation plus détaillée (consomme plus de ressources).
+                  </p>
+                </div>
+              </div>
+              <div class="tip-item">
+                <i class="fa-solid fa-star"></i>
+                <div>
+                  <strong>Mode miroir</strong>
+                  <p>Créez des effets symétriques hypnotiques avec n'importe quel mode de visualisation.</p>
+                </div>
+              </div>
+              <div class="tip-item">
+                <i class="fa-solid fa-star"></i>
+                <div>
+                  <strong>Plein écran</strong>
+                  <p>Appuyez sur F ou utilisez le bouton pour une expérience immersive totale.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="sidebar-section">
+            <div class="section-title"><i class="fa-solid fa-info-circle"></i> À propos</div>
+
+            <div class="about-content">
+              <div class="about-item">
+                <strong>Version</strong>
+                <span>1.0.0 Beta</span>
+              </div>
+              <div class="about-item">
+                <strong>Dernière mise à jour</strong>
+                <span>Décembre 2025</span>
+              </div>
+              <div class="about-item">
+                <strong>Développé par</strong>
+                <span>Safidy Mahefa</span>
+              </div>
+            </div>
+
+            <div class="about-links">
+              <a href="#" class="about-link">
+                <i class="fa-solid fa-globe"></i>
+                Site web
+              </a>
+              <a href="#" class="about-link">
+                <i class="fa-brands fa-github"></i>
+                GitHub
+              </a>
+              <a href="#" class="about-link">
+                <i class="fa-solid fa-bug"></i>
+                Signaler un bug
+              </a>
+              <a href="#" class="about-link">
+                <i class="fa-solid fa-heart"></i>
+                Faire un don
+              </a>
+            </div>
+
+            <div class="about-footer">
+              <p>© 2025 Dona. Tous droits réservés.</p>
+              <p style="font-size: 11px; color: #95a5a6; margin-top: 8px;">
+                Cette application respecte votre vie privée.<br>
+                Aucune donnée n'est collectée ou envoyée à des serveurs tiers.
+              </p>
+            </div>
+          </div>
+
+          <div class="sidebar-section">
+            <div class="section-title"><i class="fa-solid fa-envelope"></i> Support</div>
+
+            <p style="color: #636e72; font-size: 13px; line-height: 1.6; margin-bottom: 16px;">
+              Besoin d'aide? Vous avez une question ou une suggestion? N'hésitez pas à nous contacter!
+            </p>
+
+            <button class="upload-btn" style="width: 100%; margin-bottom: 12px;">
+              <i class="fa-solid fa-envelope"></i>
+              <span>Contacter le support</span>
+            </button>
+
+            <button class="upload-btn secondary" style="width: 100%;">
+              <i class="fa-solid fa-book"></i>
+              <span>Documentation complète</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Zone principale -->
+    <div class="main-content">
+      <!-- Header -->
+      <div class="header">
+        <div class="header-title"><i class="fa-solid fa-palette"></i> Espace de travail</div>
+        <div class="header-actions">
+          <button class="header-btn export-disabled" disabled aria-disabled="true"
+            title="Screenshot – En cours de production">
+            <i class="fa-solid fa-camera"></i>
+            <span>Screenshot</span>
+            <span class="coming-soon-badge">En prod</span>
+          </button>
+          <button class="header-btn export-disabled" disabled aria-disabled="true"
+            title="Sauvegarder – En cours de production">
+            <i class="fa-solid fa-circle-dot"></i>
+            <span>Sauvegarder</span>
+            <span class="coming-soon-badge">En prod</span>
+          </button>
+
+          <button class="header-btn primary" id="record" style="display: none;">
+            <i class="fa-solid fa-circle-dot"></i>
+            <span>Enregistrer</span>
+          </button>
+
+          <button class="header-btn success" id="export" style="display: none;">
+            <i class="fa-solid fa-download"></i>
+            <span>Exporter</span>
+          </button>
+
+          <button class="header-btn danger">
+            <a href="index.html">
+              <i class="fa-solid fa-trash"></i>
+              <span>Effacer</span></a>
+          </button>
+        </div>
+      </div>
+
+      <!-- Canvas -->
+      <div class="canvas-area">
+        <div id="canvaContainer">
+          <div class="canvas-placeholder">
+            <div class="canvas-placeholder-icon"><i class="fa-solid fa-music"></i></div>
+            <div class="canvas-placeholder-text">Chargez un fichier audio pour commencer</div>
+          </div>
+          <canvas id="c"></canvas>
+        </div>
+      </div>
+
+      <!-- Contrôles de lecture -->
+      <div class="playback-controls">
+        <div class="playback-left">
+          <button class="control-btn" title="Répéter"><i class="repeatButton fa-solid fa-repeat"></i></button>
+          <button class="control-btn" title="Précédent"><i class="prevBtn fa-solid fa-backward-step"></i></button>
+          <button class="play-btn" id="play"><i class="fa-solid fa-play"></i></button>
+          <button class="control-btn" title="Suivant"><i class="nextBtn fa-solid fa-forward-step"></i></button>
+          <button class="control-btn" title="Aléatoire"><i class="shuffleButton fa-solid fa-shuffle"></i></button>
+        </div>
+
+        <div class="playback-center">
+          <div class="track-info">
+            <div class="track-header">
+              <div class="track-name" id="trackName">Aucun fichier sélectionné</div>
+              <div class="track-time">
+                <span id="currentTime">0:00</span> / <span id="duration">0:00</span>
+              </div>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" id="progressFill"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="playback-right">
+          <div class="volume-control">
+            <span class="volume-icon"><i class="fa-solid fa-volume-high"></i></span>
+            <input type="range" class="volume-slider" id="volume" min="0" max="100" value="80">
+          </div>
+          <button class="control-btn" title="Plein écran"><i class="fa-solid fa-expand"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Audio element (caché) -->
+  <audio id="audio" style="display: none;"></audio>
+
+  <script type="module" src="./js/app.js"></script>
+  <script src="./js/ui.js"></script>
+  <!-- Service Worker registration pour PWA -->
+  <script src="/sw-register.js"></script>
 </body>
+
 </html>
