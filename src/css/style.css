@@ -44,9 +44,11 @@ body {
     font-size: 22px;
 }
 
-.activity-item:hover {
-    background: rgba(255, 255, 255, 0.15);
-    color: #ffffff;
+@media (pointer: fine) and (hover: hover) {
+    .activity-item:hover {
+        background: rgba(255, 255, 255, 0.15);
+        color: #ffffff;
+    }
 }
 
 .activity-item.active {
@@ -476,14 +478,13 @@ input:checked+.slider-switch:before {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 24px;
+    padding: 0 24px; /*The vertical padding pushes down the border of the controls panel so I set it to 0*/
     background: #f8f9fa;
     position: relative;
 }
 
 #canvaContainer {
     width: 95%;
-    max-width: 90%;
     aspect-ratio: 16/9;
     background: #00000000;
     border-radius: 12px;
@@ -491,6 +492,7 @@ input:checked+.slider-switch:before {
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
     border: 1px solid #e1e8ed;
     position: relative;
+    max-width: 1140px; /*The aspect ratio of 19/9 makes this element grow in height as the screen gets larger making the control panel disappear so setting this is a quick-fix*/
 }
 
 canvas {

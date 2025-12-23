@@ -94,33 +94,75 @@ document.addEventListener('DOMContentLoaded', () => {
         'info': document.getElementById('panel-info')
     };
 
+    //Pour garder en mémoire le dernier panel cliqué.
+    let lastPanelName= '';
+    
+    
     // Fonction pour changer de panel
     function switchPanel(panelName) {
+
+        //Vérifier la taille de l'écran
+        const mediaQueryList = window.matchMedia("(min-width: 769px) and (max-width: 1280px)");
+
         // Ne rien faire si c'est un panel désactivé
         const activityItem = document.querySelector(`[data-panel="${panelName}"]`);
         if (activityItem && activityItem.classList.contains('export-disabled')) {
             return;
         }
 
-        // Retirer la classe active de tous les activity items
-        activityItems.forEach(item => item.classList.remove('active'));
+        // Retirer la classe active de tous les activity items sauf celui qui correspond au panel cliqué.
+        activityItems.forEach(item => {
+            if (item.getAttribute('data-panel')!== panelName) {
+                item.classList.remove('active')
+            }
+        });
         
         // Cacher tous les panels
         Object.values(panels).forEach(panel => {
             if (panel) panel.style.display = 'none';
         });
 
-        // Activer le panel demandé
+        // Selectionner le panel demandé
         const activeItem = document.querySelector(`[data-panel="${panelName}"]`);
-        if (activeItem) {
-            activeItem.classList.add('active');
+        
+        if (mediaQueryList.matches) {//Cette partie est exécutée seulement si l'écran est entre 769 et 1280
+            const sideBarMenu = document.querySelector('.sidebar');
+
+            if (panelName=== lastPanelName) {
+
+                //On a cliqué sur un panel déjà actif ou le dernier panel qui a été désactivé
+                sideBarMenu.classList.toggle('uncollapsed');
+                panels[panelName].style.display = 'block';
+                panels[panelName].classList.toggle('active');
+                if (activeItem) {
+                    activeItem.classList.toggle('active');
+                }
+
+            } else {
+
+                //On a cliqué sur un nouveau panel, donc on ouvre le truc
+                sideBarMenu.classList.add('uncollapsed');
+                panels[panelName].style.display = 'block';
+                panels[panelName].classList.add('active');
+                if (activeItem) {
+                    activeItem.classList.add('active');
+                }
+            }
+            
+        } else {
+            if (activeItem) {
+                activeItem.classList.add('active');
+            }
+            if (panels[panelName]) {
+                panels[panelName].style.display = 'block';
+                panels[panelName].classList.add('active');
+            }
         }
 
-        if (panels[panelName]) {
-            panels[panelName].style.display = 'block';
-            panels[panelName].classList.add('active');
-        }
 
+        //Mettre à jour le dernier panel cliqué
+        lastPanelName= panelName;
+        return;
     }
 
     // Ajouter les écouteurs d'événements
@@ -128,21 +170,36 @@ document.addEventListener('DOMContentLoaded', () => {
         item.addEventListener('click', (e) => {
             const panelName = item.getAttribute('data-panel');
 
-            //Un traitement spécial pour cet élément
-            if (panelName=== 'menu') {
-                const sideBarMenu= document.querySelector('.sidebar');
-                sideBarMenu.classList.toggle('uncollapsed');
-                return;
-            }
-
             if (!item.classList.contains('export-disabled')) {
                 switchPanel(panelName);
             }
         });
     });
 
-    // Afficher le panel files par défaut
-    switchPanel('files');
+    const matchMedia= window.matchMedia("(min-width: 769px) and (max-width: 1280px)");
+    function resetLayoutAndStuffOnScreenChangeAndAtFirstaunch(e) {
+        if (e) {
+            if (e.matches) {
+                activityItems.forEach(item => {item.classList.remove('active')});//Désactiver tous les panels
+                document.querySelector('.sidebar').classList.remove('uncollapsed');
+            } else {
+                // Afficher le panel files par défaut
+                switchPanel('files');
+            }
+        } else {//La fonction est appelée en dehors d'un event listener
+            let matchMedia= window.matchMedia("(min-width: 769px) and (max-width: 1280px)");
+            if (matchMedia.matches) {
+                activityItems.forEach(item => {item.classList.remove('active')});//Désactiver tous les panels
+                document.querySelector('.sidebar').classList.remove('uncollapsed');
+            } else {
+                // Afficher le panel files par défaut
+                switchPanel('files');
+            }
+        }
+    };
+
+    resetLayoutAndStuffOnScreenChangeAndAtFirstaunch();
+    matchMedia.addEventListener('change', resetLayoutAndStuffOnScreenChangeAndAtFirstaunch);
 
     // === Gestion des paramètres ===
     
